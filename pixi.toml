@@ -75,6 +75,27 @@ shipgeometry = "*"
 # first-loaded copy wins.
 shipgeometryservice = ">=0.3"
 
+# Per-particle weights (MCParticle/SimParticle `weight`) need a data model
+# newer than the released 0.5.0. Until it is released, the opt-in `local-dm`
+# environment builds it from a sibling checkout of ShipSoft/data-model: v0.5.0
+# plus the weight, on the local/particle-weight-camelcase branch.
+#   pixi run -e local-dm build-local && pixi run -e local-dm test-local
+[feature.local-dm.dependencies]
+shipdatamodel = { path = "../data-model-weight-camelcase" }
+# Same phlex as the default environment (this one is solved on its own).
+phlex = "0.3.*"
+shipgeometry = "*"
+shipgeometryservice = ">=0.3"
+
+[feature.local-dm.tasks]
+configure-local = { cmd = """
+cmake -S . -B build-local -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
+""" }
+build-local = { cmd = "cmake --build build-local -j", depends-on = ["configure-local"] }
+test-local = { cmd = "ctest --test-dir build-local --output-on-failure", depends-on = ["build-local"], env = { PHLEX_PLUGIN_PATH = "$PIXI_PROJECT_ROOT/build-local:$CONDA_PREFIX/lib", LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/build-local" } }
+
 [activation]
 scripts = ["activate.sh"]
 
@@ -197,4 +218,5 @@ sed -i 's#"$PREK" hook-impl#pixi run -e lint prek hook-impl#' "$hooks/commit-msg
 default = { features = ["released"], solve-group = "default" }
 bench = { features = ["bench", "released"], solve-group = "default" }
 lint = { features = ["lint", "released"], solve-group = "lint" }
+local-dm = { features = ["local-dm"], solve-group = "local-dm" }
 # dev = { features = ["dev"] }  # multi-package dev, see block above

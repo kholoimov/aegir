@@ -175,6 +175,17 @@ aegir_add_plugin(
     LIBS SHiP::SHiPDataModel SHiP::SHiPUnits ROOT::RIO ROOT::Tree
 )
 
+aegir_add_plugin(
+    muon_back_source
+    LIBS
+        SHiP::SHiPDataModel
+        SHiP::SHiPUnits
+        ROOT::RIO
+        ROOT::Tree
+        spdlog::spdlog
+    INCLUDES ${Random123_INCLUDE_DIR}
+)
+
 # Standalone Pythia8 benchmark (no Phlex dependency)
 add_executable(pythia8_benchmark benchmarks/pythia8_benchmark.cpp)
 target_link_libraries(
@@ -247,4 +258,12 @@ add_test(
 add_test(
     NAME field_deflection
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/field_deflection.sh
+)
+
+# muon_back_source: replay hand-made FairShip muon-background files (cbmsim
+# and pythia8-Geant4) and check selection, kinematics and event weights
+# against MuonBackGenerator's logic. Reads back via mc_only, so no Geant4.
+add_test(
+    NAME muon_back_source
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/muon_back_source.sh
 )

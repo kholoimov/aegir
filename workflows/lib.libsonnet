@@ -90,6 +90,18 @@
     file: 'genie_events.rootracker.root',
   },
 
+  // FairShip muon-background file (pythia8-Geant4 ntuple, or cbmsim with
+  // PlaneHAPoint/vetoPoint), replayed as FairShip's MuonBackGenerator does;
+  // see docs/muon_background.md. Set `input_file`. The defaults match
+  // run_simScript.py --MuonBack.
+  muon_back:: {
+    cpp: 'muon_back_source',
+    first_entry: 0,  // input entry to start from (--firstEvent)
+    smear_beam: 8.0,  // mm, Gaussian sigma (--SmearBeam)
+    paint_beam: 50.0,  // mm, painting radius (--PaintBeam)
+    phi_randomize: false,  // --phiRandom
+  },
+
   // ── modules ────────────────────────────────────────────────────────────
   // Without a `seed`, each run draws a random one (logged at startup, so a
   // run can be reproduced after the fact). Merge one in for reproducible

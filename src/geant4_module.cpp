@@ -246,6 +246,9 @@ class Geant4Sim {
                                 cb::g4(ship::view::time(mc)));
         auto* particle = new G4PrimaryParticle(def, cb::g4(mom[0]),
                                                cb::g4(mom[1]), cb::g4(mom[2]));
+        // The particle weight becomes the G4Track weight, which Geant4 hands
+        // on to every secondary; SimParticle records it.
+        particle->SetWeight(mc.weight);
         vertex->SetPrimary(particle);
         event->AddPrimaryVertex(vertex);
       }

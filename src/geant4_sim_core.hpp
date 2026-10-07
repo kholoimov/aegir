@@ -147,6 +147,9 @@ class TrackingAction : public G4UserTrackingAction {
 
     const auto* creator = track->GetCreatorProcess();
     p.creatorProcess = creator ? creator->GetProcessSubType() : 0;
+    // A primary's weight comes from its MCParticle; a secondary inherits that
+    // of its parent track.
+    p.weight = track->GetWeight();
 
     tl_track_map[p.trackId] = tl_particles.size();
     tl_particles.push_back(p);

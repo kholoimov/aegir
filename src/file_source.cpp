@@ -63,6 +63,7 @@ SHiP::MCParticle to_mc_particle(SHiP::SimParticle const& sp) {
   // primary case to MCParticle's -1 convention.
   mc.motherId = sp.parentId == 0 ? -1 : sp.parentId;
   mc.status = 1;
+  mc.weight = sp.weight;
   return mc;
 }
 
